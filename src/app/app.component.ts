@@ -1,10 +1,94 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { DataService } from './data/data.service';
+import { Column } from './data-table/column/column.model';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush  
 })
 export class AppComponent {
   title = 'ng-DevelopingADataTable';
+
+  get data$() {
+    return this.dataService.data$;
+  }
+
+  get columns(): Column[] {
+    return [
+      { 
+        title: 'ID',
+        path:'_id'
+      },
+      {
+        title: 'Index',
+        path: 'index'
+      },
+      {
+        title: 'GUID',
+        path: 'guid'
+      },
+      {
+        title: 'Is Active?',
+        path: 'isActive'
+      },
+      {
+        title: 'Balance',
+        path: 'balance'
+      },
+      {
+        title: 'Picture URL',
+        path: 'picture'
+      },
+      {
+        title: 'Age',
+        path: 'age'
+      },
+      {
+        title: 'Eye Color',
+        path: 'eyeColor'
+      },
+      {
+        title: 'First Name',
+        path: 'name.first'
+      },
+      {
+        title: 'Last Name',
+        path: 'name.last'
+      },
+      {
+        title: 'Company',
+        path: 'company'
+      },
+      {
+        title: 'Email',
+        path: 'email'
+      },
+      {
+        title: 'Phone #',
+        path: 'phone'
+      },
+      {
+        title: 'Address',
+        path: 'address'
+      }
+    ]
+  }
+
+  constructor(private dataService: DataService) {
+    /*
+    dataService.data$.subscribe(data=>{
+      console.log("Data:",data);
+    })
+    */
+  }
+  
+  getData() {
+    this.dataService.getData();
+  }
+
+  getData2() {
+    this.dataService.getData2();
+  }
 }

@@ -1,0 +1,24 @@
+:host {
+    border-collapse: collapse;
+}
+
+th,td {
+    border-right: 1px black solid; 
+    padding-bottom: 5px;   
+    border-spacing: 0;
+}
+
+td {
+    text-overflow: ellipsis;
+    text-align: center;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+thead { 
+    background: #444;
+    color: #d9d9d9;
+}
+
+tbody tr:nth-child(even) {background: #CCC}
+tbody tr:nth-child(odd) {background: #FFF}
