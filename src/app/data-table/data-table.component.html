@@ -1,4 +1,10 @@
-<thead></thead>
+<thead>
+  <tr>
+    <th *ngFor="let column of columns">{{column.title}}</th>
+  </tr>
+</thead>
 <tbody>
-  <tr *ngFor="let row of data">Row</tr>
+  <tr *ngFor="let row of data">
+    <td *ngFor="let column of columns">{{getData(column.path, row)}}</td>
+  </tr>
 </tbody>

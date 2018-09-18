@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Column } from './column/column.model';
 
 @Component({
@@ -7,15 +7,21 @@ import { Column } from './column/column.model';
   styleUrls: ['./data-table.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DataTableComponent<T extends []> implements OnInit {
+export class DataTableComponent<T> {
 
   @Input() columns: Column[];
-
-  @Input() data: T;
+  @Input() data: T[];
 
   constructor() { }
 
-  ngOnInit() {
+  getData(path: string, row: T) {
+    return path.split('.').reduce((data,fragment)=>{
+      if(data[fragment]) {
+        return data[fragment];
+      }
+      else {
+        return '';
+      }
+    },row);
   }
-
 }

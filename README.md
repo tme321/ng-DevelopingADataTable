@@ -7,3 +7,9 @@ The component to be developed will be a datatable.  As development progresses so
 The table will be developed initially with a simple data set of fields with randomly generated values.
 
 The initial version will also immediately set change detection to `onPush` so that features are developed in a way that works with the more performant version of change detection.
+
+This development process will not focus on styling.  A simple set of styles will be used during development to make the table easier to read as development progresses but should not be considered a production ready style.
+
+[Chapter 1. Initial Datatable Design](/chapters/1. Initial Datatable Design.md);
+
+
