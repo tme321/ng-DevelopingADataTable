@@ -6,8 +6,4 @@ describe('DataTableModule', () => {
   beforeEach(() => {
     dataTableModule = new DataTableModule();
   });
-
-  it('should create an instance', () => {
-    expect(dataTableModule).toBeTruthy();
-  });
 });
