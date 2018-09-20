@@ -24,6 +24,12 @@ export class DataService {
   getData2() {
     this.http.get<Data>('/assets/data2.json')
       .subscribe(data=>{this.dataSub.next(data)});
+  }
+
+  getDataLarge() {
+    this.http.get<Data>('/assets/data3.json')
+      .subscribe(data=>{this.dataSub.next(data)});
 
   }
+
 }

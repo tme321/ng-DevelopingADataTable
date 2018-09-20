@@ -4,12 +4,14 @@
   <div>
     <button (click)="getData()">Data</button>
     <button (click)="getData2()">Data2</button>
+    <button (click)="getDataLarge()">Large Data</button>
   </div>
 </div>
 <div>
   <table app-datatable
     [data]="data$ | async"
     [columns]="columns"
+    [rowTracker]="idTracker"
   >
   </table>
 </div>
