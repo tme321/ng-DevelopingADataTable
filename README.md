@@ -13,3 +13,5 @@ This development process will not focus on styling.  A simple set of styles will
 [Chapter 1. Initial Datatable Design](./chapters/1._Initial_Datatable_Design.md)
 
 [Chapter 2. Testing the Datatable](./chapters/2._Testing_the_Datatable.md)
+
+[Chapter 3. Early Performance Considerations](./chapters/3._Early_Performance_Considerations.md)

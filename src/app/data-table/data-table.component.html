@@ -1,10 +1,30 @@
 <thead>
   <tr>
-    <th *ngFor="let column of columns">{{column.title}}</th>
+    <th *ngFor="let column of columns; trackBy: columnTracker">{{column.title}}</th>
   </tr>
 </thead>
 <tbody>
-  <tr *ngFor="let row of data">
-    <td *ngFor="let column of columns">{{getData(column.path, row)}}</td>
-  </tr>
+  <tr *ngFor="let row of data; trackBy: rowTracker">
+    <td *ngFor="let column of columns; trackBy: columnTracker">{{getData(column.path, row)}}</td>
+  </tr>     
 </tbody>
+
+
+<!--
+  ; trackBy: rowTracker
+  ; trackBy: columnTracker
+-->
+
+<!--
+    <ng-container *ngIf="rowTracker">
+      <tr *ngFor="let row of data; trackBy: rowTracker">
+        <td *ngFor="let column of columns">{{getData(column.path, row)}}</td>
+      </tr>      
+  </ng-container>
+  <ng-container *ngIf="!rowTracker">
+      <tr *ngFor="let row of data">
+        <td *ngFor="let column of columns">{{getData(column.path, row)}}</td>
+      </tr>      
+  </ng-container>
+
+-->
