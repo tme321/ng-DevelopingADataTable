@@ -1,5 +1,34 @@
 import { Component, Input, ChangeDetectionStrategy, TrackByFunction } from '@angular/core';
 import { Column, TrackedColumn } from './column/column.model';
+import { Subject, Observable } from 'rxjs';
+import { scan, share, startWith } from 'rxjs/operators';
+
+export enum SelectionActionTypes {
+  InitSelections = 'Init Selections',
+  SetSelections = 'Set Selections',
+  ToggleSelection = 'Toggle Selection', 
+}
+
+export interface SelectionAction {
+  payload?: any;
+  readonly type: SelectionActionTypes;
+}
+
+export class InitSelections implements SelectionAction {
+  readonly type = SelectionActionTypes.InitSelections;
+}
+
+export class SetSelections implements SelectionAction {
+  readonly type = SelectionActionTypes.SetSelections;
+  constructor(public payload: { selections: Array<boolean>}) {}
+}
+
+export class ToggleSelection implements SelectionAction {
+  readonly type = SelectionActionTypes.ToggleSelection;
+  constructor(public payload: { index: number }) {}
+}
+
+export type SelectionActions = InitSelections | SetSelections | ToggleSelection;
 
 @Component({
   selector: 'table[app-datatable]',
@@ -10,8 +39,23 @@ import { Column, TrackedColumn } from './column/column.model';
 export class DataTableComponent<T> {
   private trackedColumns: TrackedColumn[];
   private columnsId = 0;
+  private dataCache: T[] = [];
 
-  @Input() data: T[];
+  selectionAction = new Subject<SelectionAction>();
+  selections$: Observable<Array<boolean>>;
+
+  @Input() set data(data: T[]) {
+    this.dataCache = data;
+    
+    this.selectionAction.next(
+      new SetSelections({
+        selections: (new Array(data.length)).fill(false)
+      }));
+  }
+
+  get data() {
+    return this.dataCache;
+  }
 
   @Input() set columns(columns: Column[]) {
     this.trackedColumns = columns.map(c=>({
@@ -29,7 +73,39 @@ export class DataTableComponent<T> {
   columnTracker: TrackByFunction<TrackedColumn> = 
     (index: number, column: TrackedColumn) => column.id;
 
-  constructor() { }
+  constructor() {
+    this.selections$ = this.selectionAction.pipe(
+      startWith(new InitSelections()),
+      scan(
+        this.selectionsReducer, []));
+  }
+
+  selectionsReducer(selections:Array<boolean>, action: SelectionActions) {
+    switch(action.type) {
+      case SelectionActionTypes.InitSelections: {
+        return [];
+        break;
+      }
+      case SelectionActionTypes.SetSelections: { 
+        return action.payload.selections;
+        break;
+      }
+      case SelectionActionTypes.ToggleSelection: {
+        const index = action.payload.index;
+        const newSelections = [...selections]; 
+        newSelections[index] = !newSelections[index];
+        return newSelections;
+        break;
+      }
+      default: {
+        return selections;
+      }
+    }
+  }
+
+  rowClicked(index: number) {
+    this.selectionAction.next(new ToggleSelection({ index: index }));
+  }
 
   getData(path: string, row: T) {
     return path
