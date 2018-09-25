@@ -22,3 +22,7 @@ thead {
 
 tbody tr:nth-child(even) {background: #CCC}
 tbody tr:nth-child(odd) {background: #FFF}
+
+tbody tr.selected {
+    background-color: blue;
+}

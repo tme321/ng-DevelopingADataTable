@@ -12,6 +12,8 @@
     [data]="data$ | async"
     [columns]="columns"
     [rowTracker]="idTracker"
-  >
+    (selectedDataChanged)="onSelectedDataChanged($event)" 
+    (selectionChanged)="onSelectionChanged($event)" 
+    >
   </table>
 </div>
