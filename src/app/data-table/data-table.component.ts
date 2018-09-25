@@ -1,34 +1,9 @@
-import { Component, Input, ChangeDetectionStrategy, TrackByFunction } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy, TrackByFunction, Output, EventEmitter } from '@angular/core';
 import { Column, TrackedColumn } from './column/column.model';
 import { Subject, Observable } from 'rxjs';
-import { scan, share, startWith } from 'rxjs/operators';
-
-export enum SelectionActionTypes {
-  InitSelections = 'Init Selections',
-  SetSelections = 'Set Selections',
-  ToggleSelection = 'Toggle Selection', 
-}
-
-export interface SelectionAction {
-  payload?: any;
-  readonly type: SelectionActionTypes;
-}
-
-export class InitSelections implements SelectionAction {
-  readonly type = SelectionActionTypes.InitSelections;
-}
-
-export class SetSelections implements SelectionAction {
-  readonly type = SelectionActionTypes.SetSelections;
-  constructor(public payload: { selections: Array<boolean>}) {}
-}
-
-export class ToggleSelection implements SelectionAction {
-  readonly type = SelectionActionTypes.ToggleSelection;
-  constructor(public payload: { index: number }) {}
-}
-
-export type SelectionActions = InitSelections | SetSelections | ToggleSelection;
+import { scan, startWith, tap, shareReplay } from 'rxjs/operators';
+import { SelectionAction, InitSelections, SetContiguous, ToggleSelection, SetSelections, SelectionActions } from './selection/selection.actions';
+import { selectionReducer } from './selection/selection.reducer';
 
 @Component({
   selector: 'table[app-datatable]',
@@ -40,6 +15,7 @@ export class DataTableComponent<T> {
   private trackedColumns: TrackedColumn[];
   private columnsId = 0;
   private dataCache: T[] = [];
+  private previouslySelectedIndex = -1;
 
   selectionAction = new Subject<SelectionAction>();
   selections$: Observable<Array<boolean>>;
@@ -49,7 +25,7 @@ export class DataTableComponent<T> {
     
     this.selectionAction.next(
       new SetSelections({
-        selections: (new Array(data.length)).fill(false)
+        selections: (new Array(this.dataCache.length)).fill(false)
       }));
   }
 
@@ -73,38 +49,33 @@ export class DataTableComponent<T> {
   columnTracker: TrackByFunction<TrackedColumn> = 
     (index: number, column: TrackedColumn) => column.id;
 
+  @Output() selectionChanged = new EventEmitter<boolean[]>();
+  @Output() selectedDataChanged = new EventEmitter<T[]>();
+
   constructor() {
     this.selections$ = this.selectionAction.pipe(
       startWith(new InitSelections()),
-      scan(
-        this.selectionsReducer, []));
+      scan(selectionReducer,[]),
+      tap(selections=>{
+        this.selectionChanged.emit(selections);
+        this.selectedDataChanged.emit(
+          this.dataCache.filter((row: T,index: number)=>selections[index]));
+      }),
+      shareReplay());
   }
 
-  selectionsReducer(selections:Array<boolean>, action: SelectionActions) {
-    switch(action.type) {
-      case SelectionActionTypes.InitSelections: {
-        return [];
-        break;
-      }
-      case SelectionActionTypes.SetSelections: { 
-        return action.payload.selections;
-        break;
-      }
-      case SelectionActionTypes.ToggleSelection: {
-        const index = action.payload.index;
-        const newSelections = [...selections]; 
-        newSelections[index] = !newSelections[index];
-        return newSelections;
-        break;
-      }
-      default: {
-        return selections;
-      }
+  rowClicked(e: MouseEvent, index: number) {
+    if(e.metaKey || e.ctrlKey) {
+      this.selectionAction.next(
+        new SetContiguous({
+          toIndex: index,
+          prevIndex: this.previouslySelectedIndex
+        }));
     }
-  }
-
-  rowClicked(index: number) {
-    this.selectionAction.next(new ToggleSelection({ index: index }));
+    else {
+      this.selectionAction.next(new ToggleSelection({ index: index }));
+    }
+    this.previouslySelectedIndex = index;
   }
 
   getData(path: string, row: T) {

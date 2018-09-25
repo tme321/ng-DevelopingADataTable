@@ -6,13 +6,17 @@
 <tbody>
   <tr [class.selected]="(selections$ | async)[r]" 
     *ngFor="let row of data; index as r; trackBy: rowTracker" 
-    (click)="rowClicked(r)">
+    (click)="rowClicked($event,r)">
     <td *ngFor="let column of columns; trackBy: columnTracker">
       {{getData(column.path, row)}}
     </td>
   </tr>     
 </tbody>
 
+<!--
+<ng-container *ngIf="selections$ | async as selections">
+  </ng-container>
+-->
 
 <!--
   ; trackBy: rowTracker

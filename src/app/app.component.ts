@@ -42,7 +42,13 @@ export class AppComponent {
     this.dataService.getDataLarge();
   }
 
-  
+  onSelectedDataChanged(selectedData: Data) {
+    console.log('selected data changed:',selectedData);
+  }
+
+  onSelectionChanged(selection: boolean[]) {
+    console.log('selection changed:',selection);
+  }
 }
 
 const columns: Column[] = [
