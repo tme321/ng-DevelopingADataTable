@@ -18,10 +18,12 @@ This development process will not focus on styling.  A simple set of styles will
 
 3.  Make internal behavior of the datatable operate through rxjs streams as much possible.  This should both keep performance relatively high and reduce potential behavior bugs.
 
-
+## Chapters
 
 [Chapter 1. Initial Datatable Design](/chapters/1._Initial_Datatable_Design.md)
 
 [Chapter 2. Testing the Datatable](/chapters/2._Testing_the_Datatable.md)
 
 [Chapter 3. Early Performance Considerations](/chapters/3._Early_Performance_Considerations.md)
+
+[Chapter 4. Row Selection](/chapters/4._Row_Selection.md)
