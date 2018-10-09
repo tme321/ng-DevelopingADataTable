@@ -16,8 +16,7 @@ export class DataTableComponent<T> {
   private columnsId = 0;
   private dataCache: T[] = [];
   private previouslySelectedIndex = -1;
-
-  selectionAction = new Subject<SelectionAction>();
+  private selectionAction = new Subject<SelectionAction>();
   selections$: Observable<Array<boolean>>;
 
   @Input() set data(data: T[]) {

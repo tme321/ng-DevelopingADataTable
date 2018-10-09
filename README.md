@@ -27,3 +27,5 @@ This development process will not focus on styling.  A simple set of styles will
 [Chapter 3. Early Performance Considerations](/chapters/3._Early_Performance_Considerations.md)
 
 [Chapter 4. Row Selection](/chapters/4._Row_Selection.md)
+
+[Chapter 5. Updating Tests](/chapters/5._Updating-Tests.md)
